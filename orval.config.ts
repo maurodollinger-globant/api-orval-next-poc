@@ -4,7 +4,8 @@ import { defineConfig } from 'orval';
 export default defineConfig({
     myApi: {
       output: {
-        client: 'fetch', 
+        client: 'react-query', 
+        httpClient: 'fetch',
         mode: 'tags-split',
         target: 'app/gen/petstore.ts', 
         schemas: 'app/gen/models',
@@ -18,7 +19,7 @@ export default defineConfig({
           },
           mock: {
             properties: {
-              '/tag|name/': () => faker.person.lastName(),
+              '/name/': () => faker.person.lastName(),
             },
           },
         },

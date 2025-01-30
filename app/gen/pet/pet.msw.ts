@@ -38,7 +38,19 @@ export const getUpdatePetResponseMock = (
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => faker.string.alpha(20)),
-  tags: (() => faker.person.lastName())(),
+  tags: faker.helpers.arrayElement([
+    Array.from(
+      { length: faker.number.int({ min: 1, max: 10 }) },
+      (_, i) => i + 1,
+    ).map(() => ({
+      id: faker.helpers.arrayElement([
+        faker.number.int({ min: undefined, max: undefined }),
+        undefined,
+      ]),
+      name: (() => faker.person.lastName())(),
+    })),
+    undefined,
+  ]),
   status: faker.helpers.arrayElement([
     faker.helpers.arrayElement(["available", "pending", "sold"] as const),
     undefined,
@@ -68,7 +80,19 @@ export const getAddPetResponseMock = (
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => faker.string.alpha(20)),
-  tags: (() => faker.person.lastName())(),
+  tags: faker.helpers.arrayElement([
+    Array.from(
+      { length: faker.number.int({ min: 1, max: 10 }) },
+      (_, i) => i + 1,
+    ).map(() => ({
+      id: faker.helpers.arrayElement([
+        faker.number.int({ min: undefined, max: undefined }),
+        undefined,
+      ]),
+      name: (() => faker.person.lastName())(),
+    })),
+    undefined,
+  ]),
   status: faker.helpers.arrayElement([
     faker.helpers.arrayElement(["available", "pending", "sold"] as const),
     undefined,
@@ -100,7 +124,19 @@ export const getFindPetsByStatusResponseMock = (): Pet[] =>
       { length: faker.number.int({ min: 1, max: 10 }) },
       (_, i) => i + 1,
     ).map(() => faker.string.alpha(20)),
-    tags: (() => faker.person.lastName())(),
+    tags: faker.helpers.arrayElement([
+      Array.from(
+        { length: faker.number.int({ min: 1, max: 10 }) },
+        (_, i) => i + 1,
+      ).map(() => ({
+        id: faker.helpers.arrayElement([
+          faker.number.int({ min: undefined, max: undefined }),
+          undefined,
+        ]),
+        name: (() => faker.person.lastName())(),
+      })),
+      undefined,
+    ]),
     status: faker.helpers.arrayElement([
       faker.helpers.arrayElement(["available", "pending", "sold"] as const),
       undefined,
@@ -131,7 +167,19 @@ export const getFindPetsByTagsResponseMock = (): Pet[] =>
       { length: faker.number.int({ min: 1, max: 10 }) },
       (_, i) => i + 1,
     ).map(() => faker.string.alpha(20)),
-    tags: (() => faker.person.lastName())(),
+    tags: faker.helpers.arrayElement([
+      Array.from(
+        { length: faker.number.int({ min: 1, max: 10 }) },
+        (_, i) => i + 1,
+      ).map(() => ({
+        id: faker.helpers.arrayElement([
+          faker.number.int({ min: undefined, max: undefined }),
+          undefined,
+        ]),
+        name: (() => faker.person.lastName())(),
+      })),
+      undefined,
+    ]),
     status: faker.helpers.arrayElement([
       faker.helpers.arrayElement(["available", "pending", "sold"] as const),
       undefined,
@@ -160,7 +208,19 @@ export const getGetPetByIdResponseMock = (
     { length: faker.number.int({ min: 1, max: 10 }) },
     (_, i) => i + 1,
   ).map(() => faker.string.alpha(20)),
-  tags: (() => faker.person.lastName())(),
+  tags: faker.helpers.arrayElement([
+    Array.from(
+      { length: faker.number.int({ min: 1, max: 10 }) },
+      (_, i) => i + 1,
+    ).map(() => ({
+      id: faker.helpers.arrayElement([
+        faker.number.int({ min: undefined, max: undefined }),
+        undefined,
+      ]),
+      name: (() => faker.person.lastName())(),
+    })),
+    undefined,
+  ]),
   status: faker.helpers.arrayElement([
     faker.helpers.arrayElement(["available", "pending", "sold"] as const),
     undefined,

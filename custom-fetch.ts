@@ -47,6 +47,8 @@ const getBody = <T>(c: Response | Request): Promise<T> => {
     const requestInit: RequestInit = {
       ...options,
       headers: requestHeaders,
+      cache: 'force-cache',
+      next: { revalidate: 60}
     };
   
     const request = new Request(requestUrl, requestInit);
@@ -55,3 +57,4 @@ const getBody = <T>(c: Response | Request): Promise<T> => {
   
     return { status: response.status, data, headers: response.headers } as T;
   };
+

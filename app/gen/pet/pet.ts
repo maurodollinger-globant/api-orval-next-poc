@@ -12,6 +12,20 @@ Some useful links:
 - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
  * OpenAPI spec version: 1.0.19
  */
+import { useMutation, useQuery } from "@tanstack/react-query";
+import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
+  MutationFunction,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import type {
   ApiResponse,
   FindPetsByStatusParams,
@@ -21,6 +35,8 @@ import type {
   UploadFileParams,
 } from ".././models";
 import { customFetch } from "../../../custom-fetch";
+
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
 /**
  * Update an existing pet by Id
@@ -48,6 +64,61 @@ export const updatePet = async (
   });
 };
 
+export const getUpdatePetMutationOptions = <
+  TData = Awaited<ReturnType<typeof updatePet>>,
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<TData, TError, { data: Pet }, TContext>;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const mutationKey = ["updatePet"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatePet>>,
+    { data: Pet }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return updatePet(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions } as UseMutationOptions<
+    TData,
+    TError,
+    { data: Pet },
+    TContext
+  >;
+};
+
+export type UpdatePetMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatePet>>
+>;
+export type UpdatePetMutationBody = Pet;
+export type UpdatePetMutationError = void;
+
+/**
+ * @summary Update an existing pet
+ */
+export const useUpdatePet = <
+  TData = Awaited<ReturnType<typeof updatePet>>,
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<TData, TError, { data: Pet }, TContext>;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<TData, TError, { data: Pet }, TContext> => {
+  const mutationOptions = getUpdatePetMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 /**
  * Add a new pet to the store
  * @summary Add a new pet to the store
@@ -74,6 +145,61 @@ export const addPet = async (
   });
 };
 
+export const getAddPetMutationOptions = <
+  TData = Awaited<ReturnType<typeof addPet>>,
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<TData, TError, { data: Pet }, TContext>;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const mutationKey = ["addPet"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof addPet>>,
+    { data: Pet }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return addPet(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions } as UseMutationOptions<
+    TData,
+    TError,
+    { data: Pet },
+    TContext
+  >;
+};
+
+export type AddPetMutationResult = NonNullable<
+  Awaited<ReturnType<typeof addPet>>
+>;
+export type AddPetMutationBody = Pet;
+export type AddPetMutationError = void;
+
+/**
+ * @summary Add a new pet to the store
+ */
+export const useAddPet = <
+  TData = Awaited<ReturnType<typeof addPet>>,
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<TData, TError, { data: Pet }, TContext>;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<TData, TError, { data: Pet }, TContext> => {
+  const mutationOptions = getAddPetMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 /**
  * Multiple status values can be provided with comma separated strings
  * @summary Finds Pets by status
@@ -112,6 +238,155 @@ export const findPetsByStatus = async (
     method: "GET",
   });
 };
+
+export const getFindPetsByStatusQueryKey = (
+  params?: FindPetsByStatusParams,
+) => {
+  return [
+    `http://localhost:3000/pet/findByStatus`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getFindPetsByStatusQueryOptions = <
+  TData = Awaited<ReturnType<typeof findPetsByStatus>>,
+  TError = void,
+>(
+  params?: FindPetsByStatusParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof findPetsByStatus>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getFindPetsByStatusQueryKey(params);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof findPetsByStatus>>
+  > = ({ signal }) => findPetsByStatus(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof findPetsByStatus>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type FindPetsByStatusQueryResult = NonNullable<
+  Awaited<ReturnType<typeof findPetsByStatus>>
+>;
+export type FindPetsByStatusQueryError = void;
+
+export function useFindPetsByStatus<
+  TData = Awaited<ReturnType<typeof findPetsByStatus>>,
+  TError = void,
+>(
+  params: undefined | FindPetsByStatusParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof findPetsByStatus>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findPetsByStatus>>,
+          TError,
+          TData
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindPetsByStatus<
+  TData = Awaited<ReturnType<typeof findPetsByStatus>>,
+  TError = void,
+>(
+  params?: FindPetsByStatusParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof findPetsByStatus>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findPetsByStatus>>,
+          TError,
+          TData
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindPetsByStatus<
+  TData = Awaited<ReturnType<typeof findPetsByStatus>>,
+  TError = void,
+>(
+  params?: FindPetsByStatusParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof findPetsByStatus>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Finds Pets by status
+ */
+
+export function useFindPetsByStatus<
+  TData = Awaited<ReturnType<typeof findPetsByStatus>>,
+  TError = void,
+>(
+  params?: FindPetsByStatusParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof findPetsByStatus>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getFindPetsByStatusQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
@@ -152,6 +427,132 @@ export const findPetsByTags = async (
   });
 };
 
+export const getFindPetsByTagsQueryKey = (params?: FindPetsByTagsParams) => {
+  return [
+    `http://localhost:3000/pet/findByTags`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getFindPetsByTagsQueryOptions = <
+  TData = Awaited<ReturnType<typeof findPetsByTags>>,
+  TError = void,
+>(
+  params?: FindPetsByTagsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findPetsByTags>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getFindPetsByTagsQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof findPetsByTags>>> = ({
+    signal,
+  }) => findPetsByTags(params, { signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof findPetsByTags>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type FindPetsByTagsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof findPetsByTags>>
+>;
+export type FindPetsByTagsQueryError = void;
+
+export function useFindPetsByTags<
+  TData = Awaited<ReturnType<typeof findPetsByTags>>,
+  TError = void,
+>(
+  params: undefined | FindPetsByTagsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findPetsByTags>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findPetsByTags>>,
+          TError,
+          TData
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindPetsByTags<
+  TData = Awaited<ReturnType<typeof findPetsByTags>>,
+  TError = void,
+>(
+  params?: FindPetsByTagsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findPetsByTags>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findPetsByTags>>,
+          TError,
+          TData
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindPetsByTags<
+  TData = Awaited<ReturnType<typeof findPetsByTags>>,
+  TError = void,
+>(
+  params?: FindPetsByTagsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findPetsByTags>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Finds Pets by tags
+ */
+
+export function useFindPetsByTags<
+  TData = Awaited<ReturnType<typeof findPetsByTags>>,
+  TError = void,
+>(
+  params?: FindPetsByTagsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findPetsByTags>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getFindPetsByTagsQueryOptions(params, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
 /**
  * Returns a single pet
  * @summary Find pet by ID
@@ -175,6 +576,134 @@ export const getPetById = async (
     method: "GET",
   });
 };
+
+export const getGetPetByIdQueryKey = (petId: number) => {
+  return [`http://localhost:3000/pet/${petId}`] as const;
+};
+
+export const getGetPetByIdQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPetById>>,
+  TError = void,
+>(
+  petId: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPetById>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPetByIdQueryKey(petId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPetById>>> = ({
+    signal,
+  }) => getPetById(petId, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!petId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPetById>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetPetByIdQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPetById>>
+>;
+export type GetPetByIdQueryError = void;
+
+export function useGetPetById<
+  TData = Awaited<ReturnType<typeof getPetById>>,
+  TError = void,
+>(
+  petId: number,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPetById>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPetById>>,
+          TError,
+          TData
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetPetById<
+  TData = Awaited<ReturnType<typeof getPetById>>,
+  TError = void,
+>(
+  petId: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPetById>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPetById>>,
+          TError,
+          TData
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetPetById<
+  TData = Awaited<ReturnType<typeof getPetById>>,
+  TError = void,
+>(
+  petId: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPetById>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+/**
+ * @summary Find pet by ID
+ */
+
+export function useGetPetById<
+  TData = Awaited<ReturnType<typeof getPetById>>,
+  TError = void,
+>(
+  petId: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof getPetById>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetPetByIdQueryOptions(petId, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 /**
  * @summary Updates a pet in the store with form data
@@ -216,6 +745,76 @@ export const updatePetWithForm = async (
   );
 };
 
+export const getUpdatePetWithFormMutationOptions = <
+  TData = Awaited<ReturnType<typeof updatePetWithForm>>,
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    TData,
+    TError,
+    { petId: number; params?: UpdatePetWithFormParams },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const mutationKey = ["updatePetWithForm"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updatePetWithForm>>,
+    { petId: number; params?: UpdatePetWithFormParams }
+  > = (props) => {
+    const { petId, params } = props ?? {};
+
+    return updatePetWithForm(petId, params, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions } as UseMutationOptions<
+    TData,
+    TError,
+    { petId: number; params?: UpdatePetWithFormParams },
+    TContext
+  >;
+};
+
+export type UpdatePetWithFormMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updatePetWithForm>>
+>;
+
+export type UpdatePetWithFormMutationError = void;
+
+/**
+ * @summary Updates a pet in the store with form data
+ */
+export const useUpdatePetWithForm = <
+  TData = Awaited<ReturnType<typeof updatePetWithForm>>,
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    TData,
+    TError,
+    { petId: number; params?: UpdatePetWithFormParams },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  TData,
+  TError,
+  { petId: number; params?: UpdatePetWithFormParams },
+  TContext
+> => {
+  const mutationOptions = getUpdatePetWithFormMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 /**
  * @summary Deletes a pet
  */
@@ -239,6 +838,61 @@ export const deletePet = async (
   });
 };
 
+export const getDeletePetMutationOptions = <
+  TData = Awaited<ReturnType<typeof deletePet>>,
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<TData, TError, { petId: number }, TContext>;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const mutationKey = ["deletePet"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deletePet>>,
+    { petId: number }
+  > = (props) => {
+    const { petId } = props ?? {};
+
+    return deletePet(petId, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions } as UseMutationOptions<
+    TData,
+    TError,
+    { petId: number },
+    TContext
+  >;
+};
+
+export type DeletePetMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deletePet>>
+>;
+
+export type DeletePetMutationError = void;
+
+/**
+ * @summary Deletes a pet
+ */
+export const useDeletePet = <
+  TData = Awaited<ReturnType<typeof deletePet>>,
+  TError = void,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<TData, TError, { petId: number }, TContext>;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<TData, TError, { petId: number }, TContext> => {
+  const mutationOptions = getDeletePetMutationOptions(options);
+
+  return useMutation(mutationOptions);
+};
 /**
  * @summary uploads an image
  */
@@ -277,4 +931,75 @@ export const uploadFile = async (
     },
     body: JSON.stringify(uploadFileBody),
   });
+};
+
+export const getUploadFileMutationOptions = <
+  TData = Awaited<ReturnType<typeof uploadFile>>,
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    TData,
+    TError,
+    { petId: number; data: Blob; params?: UploadFileParams },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const mutationKey = ["uploadFile"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof uploadFile>>,
+    { petId: number; data: Blob; params?: UploadFileParams }
+  > = (props) => {
+    const { petId, data, params } = props ?? {};
+
+    return uploadFile(petId, data, params, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions } as UseMutationOptions<
+    TData,
+    TError,
+    { petId: number; data: Blob; params?: UploadFileParams },
+    TContext
+  >;
+};
+
+export type UploadFileMutationResult = NonNullable<
+  Awaited<ReturnType<typeof uploadFile>>
+>;
+export type UploadFileMutationBody = Blob;
+export type UploadFileMutationError = unknown;
+
+/**
+ * @summary uploads an image
+ */
+export const useUploadFile = <
+  TData = Awaited<ReturnType<typeof uploadFile>>,
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    TData,
+    TError,
+    { petId: number; data: Blob; params?: UploadFileParams },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  TData,
+  TError,
+  { petId: number; data: Blob; params?: UploadFileParams },
+  TContext
+> => {
+  const mutationOptions = getUploadFileMutationOptions(options);
+
+  return useMutation(mutationOptions);
 };
