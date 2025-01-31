@@ -12,8 +12,8 @@ Some useful links:
 - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
  * OpenAPI spec version: 1.0.19
  */
-import type { LoginUserParams, User } from ".././models";
-import { customFetch } from "../../../custom-fetch";
+import type { LoginUserParams, User } from "../../models";
+import { customFetch } from "../../../../custom-fetch";
 
 /**
  * This can only be done by the logged in user.

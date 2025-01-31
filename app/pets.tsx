@@ -1,10 +1,8 @@
 import { Pet } from './gen/models';
-import { findPetsByStatus } from './gen/pet/pet';
+import { findPetsByStatus} from '@/app/gen/server/pet/pet';
 
 export default async function Pets() {
   const { data: pets, status } = await findPetsByStatus({status: 'available'});
-
-  console.log(pets);
 
   return (
     <div className='flex flex-col gap-6 items-center justify-center'>

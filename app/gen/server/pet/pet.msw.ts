@@ -14,7 +14,7 @@ Some useful links:
  */
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
-import type { ApiResponse, Pet } from ".././models";
+import type { ApiResponse, Pet } from "../../models";
 
 export const getUpdatePetResponseMock = (
   overrideResponse: Partial<Pet> = {},

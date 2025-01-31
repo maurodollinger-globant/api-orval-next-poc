@@ -14,7 +14,7 @@ Some useful links:
  */
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
-import type { GetInventory200, Order } from ".././models";
+import type { GetInventory200, Order } from "../../models";
 
 export const getGetInventoryResponseMock = (): GetInventory200 => ({
   [faker.string.alphanumeric(5)]: faker.number.int({

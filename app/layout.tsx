@@ -1,5 +1,8 @@
 import { setupServer } from 'msw/node';
-import { getPetMock } from './gen/pet/pet.msw';
+import { getPetMock as getServerPetMock } from './gen/server/pet/pet.msw';
+
+import ReactQueryProvider from './providers/reactQueryProvider';
+import MockProvider from './providers/mockProvider';
 
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -13,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 const server = setupServer();
-server.use(...getPetMock());
+server.use(...getServerPetMock());
 server.listen();
 
 export default function RootLayout({
@@ -23,7 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <ReactQueryProvider>
+          <MockProvider/>
+          {children}
+        </ReactQueryProvider>
+      </body>
     </html>
   );
 }

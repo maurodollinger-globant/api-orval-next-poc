@@ -19,8 +19,8 @@ import type {
   Pet,
   UpdatePetWithFormParams,
   UploadFileParams,
-} from ".././models";
-import { customFetch } from "../../../custom-fetch";
+} from "../../models";
+import { customFetch } from "../../../../custom-fetch";
 
 /**
  * Update an existing pet by Id

@@ -14,7 +14,7 @@ Some useful links:
  */
 import { faker } from "@faker-js/faker";
 import { HttpResponse, delay, http } from "msw";
-import type { User } from ".././models";
+import type { User } from "../../models";
 
 export const getCreateUsersWithListInputResponseMock = (
   overrideResponse: Partial<User> = {},
