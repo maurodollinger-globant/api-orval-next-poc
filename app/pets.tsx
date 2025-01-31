@@ -1,9 +1,22 @@
 'use client';
 import { Pet } from '@/app/gen/models';
 import { useFindPetsByStatus } from '@/app/gen/pet/pet';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Pets() {
-  const { data, status } = useFindPetsByStatus({status: 'available'});
+  const [shouldFetch, setShouldFetch] = useState(false);
+  const isFirstRender = useRef(false);
+
+  useEffect(()=>{
+    if(!isFirstRender.current){
+      isFirstRender.current = true;
+      setTimeout(()=>{
+        setShouldFetch(true);
+      },100)
+    }
+  },[])
+
+  const { data, status } = useFindPetsByStatus({status: 'available'},{query:{enabled:shouldFetch}});
   
   const pets = Array.isArray(data?.data) ? data.data : [];
 
